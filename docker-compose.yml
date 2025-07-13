@@ -1,0 +1,36 @@
+version: "3.3"
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false 
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512M -Xmx512M"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    restart: always
+  kibana:
+    image: docker.elastic.co/kibana/kibana:9.0.3
+    container_name: kibana
+    ports:
+      - 5601:5601
+    environment:
+      - XPACK_SECURITY_ENABLED=false  # 無料機能のみ利用するため、セキュリティ機能を無効化
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=kibana_system # Kibanaが使用するデフォルトのシステムアカウント
+      - ELASTICSEARCH_PASSWORD=P@ssw0rd
+    depends_on:
+      - elasticsearch
+    restart: always
+
+volumes:
+  elasticsearch-data:
+    driver: local

@@ -28,3 +28,37 @@ KibanaはElasticsearchに格納されたデータを可視化・分析するた�
 - データ収集：Logstashやbeatsがログやメトリクスを収集
 - データ蓄積：Elasticsearchにデータを格納・インデックス化
 - データ可視化：Kibanaでデータを分析・可視化
+
+## RDBなどと比べた時の特徴
+Elasticsearchは、特に大量の非構造化または半構造化テキストデータに対して、ユーザーが求める情報を高速かつ柔軟に探し出すことに特化したシステム。<br>
+通常のデータベースがデータの厳密な管理と整合性を重視するのに対し、Elasticsearchは検索のパフォーマンスと多様な検索機能に重点を置いている。<br>
+そのため、両者は異なる目的で利用され、多くのシステムでは両方を組み合わせて活用されてる。<br>
+例えば、マスターデータはRDBに格納し、検索用のデータはElasticsearchに同期して全文検索を提供する、といった連携が一般的です。
+
+## 環境構築
+
+`docker-compose up -d`で起動後、いかにアクセス。
+http://localhost:5601/
+
+## kibanaの操作
+データ投入
+```
+# 投入データ
+curl -X POST "localhost:9200/sample-logs/_doc" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%S.%3NZ)'",
+    "level": "INFO",
+    "message": "Application started successfully",
+    "service": "web-app",
+    "host": "server01"
+  }'
+
+# レスポンス
+{"_index":"sample-logs","_id":"pmmzA5gBDAT1gSav8rtQ","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":0,"_primary_term":1}
+
+```
+
+## 参考
+https://qiita.com/KWS_0901/items/c300b5ee010cb48dbaa3<br>
+https://qiita.com/wooooo/items/8be2c7e1ab75a7a54851
