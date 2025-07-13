@@ -33,11 +33,11 @@ KibanaはElasticsearchに格納されたデータを可視化・分析するた�
 Elasticsearchは、特に大量の非構造化または半構造化テキストデータに対して、ユーザーが求める情報を高速かつ柔軟に探し出すことに特化したシステム。<br>
 通常のデータベースがデータの厳密な管理と整合性を重視するのに対し、Elasticsearchは検索のパフォーマンスと多様な検索機能に重点を置いている。<br>
 そのため、両者は異なる目的で利用され、多くのシステムでは両方を組み合わせて活用されてる。<br>
-例えば、マスターデータはRDBに格納し、検索用のデータはElasticsearchに同期して全文検索を提供する、といった連携が一般的です。
+例えば、マスターデータはRDBに格納し、検索用のデータはElasticsearchに同期して全文検索を提供する、といった連携が一般的。
 
 ## 環境構築
 
-`docker-compose up -d`で起動後、いかにアクセス。
+`docker-compose up -d`で起動後、下記URLにアクセス。<br>
 http://localhost:5601/
 
 ## kibanaの操作
@@ -58,6 +58,12 @@ curl -X POST "localhost:9200/sample-logs/_doc" \
 {"_index":"sample-logs","_id":"pmmzA5gBDAT1gSav8rtQ","_version":1,"result":"created","_shards":{"total":2,"successful":1,"failed":0},"_seq_no":0,"_primary_term":1}
 
 ```
+Analysis→Discover
+![ログイン後](image/move001.png)　
+
+クエリを入力後RUNを押下して、ログを表示。Table形式かJSON形式でログが見れる
+![ログ画面](image/move002.png)
+
 
 ## 参考
 https://qiita.com/KWS_0901/items/c300b5ee010cb48dbaa3<br>
