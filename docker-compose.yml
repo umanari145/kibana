@@ -1,6 +1,19 @@
 version: "3.3"
 
 services:
+
+  php-app:
+    container_name: php-els
+    build: .
+    volumes:
+      - "./app/:/var/www/html"
+    ports:
+      - "8080:80"
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
     container_name: elasticsearch
@@ -14,9 +27,11 @@ services:
         hard: -1
     ports:
       - 9200:9200
-    volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+    #volumes:
+    #  - elasticsearch-data:/usr/share/elasticsearch/data
     restart: always
+    networks:
+      - elk-network    
   kibana:
     image: docker.elastic.co/kibana/kibana:9.0.3
     container_name: kibana
@@ -30,7 +45,13 @@ services:
     depends_on:
       - elasticsearch
     restart: always
+    networks:
+      - elk-network
 
-volumes:
-  elasticsearch-data:
-    driver: local
+networks:
+  elk-network:
+    driver: bridge    
+
+#volumes:
+#  elasticsearch-data:
+#    driver: local

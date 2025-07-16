@@ -41,7 +41,7 @@ Elasticsearchは、特に大量の非構造化または半構造化テキスト�
 http://localhost:5601/
 
 ## kibanaの操作
-データ投入
+データ投入(実際にはログをこのようにみることが多い)
 ```
 # 投入データ
 curl -X POST "localhost:9200/sample-logs/_doc" \
@@ -64,7 +64,21 @@ Analysis→Discover
 クエリを入力後RUNを押下して、ログを表示。Table形式かJSON形式でログが見れる
 ![ログ画面](image/move002.png)
 
+※elastic Search生で見ることも可能
 
+```
+リクエスト
+curl "localhost:9200/sample-logs/_search?size=5&sort=timestamp:desc"
+
+レスポンス
+{"took":2,"timed_out":false,"_shards":{"total":1,"successful":1,"skipped":0,"failed":0},"hits":{"total":{"value":1,"relation":"eq"},"max_score":null,"hits":[{"_index":"sample-logs","_id":"pmmzA5gBDAT1gSav8rtQ","_score":null,"_source":{
+    "timestamp": "2025-07-13T12:13:01.3NZ",
+    "level": "INFO",
+    "message": "Application started successfully",
+    "service": "web-app",
+    "host": "server01"
+  },"sort":[1752365581300]}]}}%   
+```                                     
 ## 参考
 https://qiita.com/KWS_0901/items/c300b5ee010cb48dbaa3<br>
 https://qiita.com/wooooo/items/8be2c7e1ab75a7a54851
