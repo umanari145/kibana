@@ -78,7 +78,11 @@ curl "localhost:9200/sample-logs/_search?size=5&sort=timestamp:desc"
     "service": "web-app",
     "host": "server01"
   },"sort":[1752365581300]}]}}%   
-```                                     
+```                                
+
+## php-app
+web上から確認できるアプリで、Monologをelastic-searchにログを流し込み
+
 ## 参考
 https://qiita.com/KWS_0901/items/c300b5ee010cb48dbaa3<br>
 https://qiita.com/wooooo/items/8be2c7e1ab75a7a54851
