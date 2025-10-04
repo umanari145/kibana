@@ -3,7 +3,8 @@
     "require": {
         "php": ">=8.2",
         "elasticsearch/elasticsearch": "^9.0.x-dev",
-        "monolog/monolog": "^3.0"
+        "monolog/monolog": "^3.0",
+        "robmorgan/phinx": "^0.16.10"
     },
     "autoload": {
         "psr-4": {

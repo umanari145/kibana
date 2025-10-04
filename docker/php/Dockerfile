@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y \
     msmtp \
     msmtp-mta \
     libcurl4-openssl-dev \
-    && docker-php-ext-install curl \
+    && docker-php-ext-install curl pdo pdo_mysql mysqli \
     && rm -rf /var/lib/apt/lists/*
 
 # Composerをインストール

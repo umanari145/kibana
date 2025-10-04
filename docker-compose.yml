@@ -4,7 +4,7 @@ services:
 
   php-app:
     container_name: php-els
-    build: .
+    build:  "docker/php/"
     volumes:
       - "./app/:/var/www/html"
     ports:
@@ -45,6 +45,38 @@ services:
     depends_on:
       - elasticsearch
     restart: always
+    networks:
+      - elk-network
+
+  el-db:
+    container_name: el-db
+    image: mysql:8.0
+    volumes:
+      - ./docker/db/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./docker/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_DATABASE=homestead
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_ROOT_PASSWORD=secret
+      - TZ=Asia/Tokyo
+      - DB_PORT=3306
+    ports:
+      - "3306:3306"
+    networks:
+      - elk-network
+  
+  phpmyadmin:
+    image: phpmyadmin
+    depends_on:
+      - el-db
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOSTS=el-db
+      - PMA_USER=root
+      - PMA_PASSWORD=secret
+    ports:
+      - "3001:80"
     networks:
       - elk-network
 

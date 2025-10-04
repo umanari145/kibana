@@ -37,7 +37,7 @@ Elasticsearchは、特に大量の非構造化または半構造化テキスト�
 
 ## 環境構築
 
-`docker-compose up -d`で起動後、下記URLにアクセス。<br>
+`docker-compose up -d`で起動後、下記URLにアクセス。※少し時間がたったあとにアクセス<br>
 http://localhost:5601/
 
 ## kibanaの操作
@@ -83,6 +83,67 @@ curl "localhost:9200/sample-logs/_search?size=5&sort=timestamp:desc"
 ## php-app
 web上から確認できるアプリで、Monologをelastic-searchにログを流し込み
 
+
+## phinx
+公式 https://phinx.org/
+
+設定ファイル作成
+```
+php ./vendor/bin/phinx init          
+Phinx by CakePHP - https://phinx.org. 0.16.10
+
+created /var/www/html/phinx.php
+
+```
+
+migrationファイル作成
+```
+php ./vendor/bin/phinx create Reviews
+Phinx by CakePHP - https://phinx.org. 0.16.10
+
+using config file phinx.php
+using config parser php
+using migration paths 
+ - /var/www/html/db/migrations
+using seed paths 
+ - /var/www/html/db/seeds
+using migration base class Phinx\Migration\AbstractMigration
+using default template
+created db/migrations/20251004050146_reviews.php
+```
+
+```
+# マイグレーション実行
+php vendor/bin/phinx migrate
+
+# ロールバック
+php vendor/bin/phinx rollback
+```
+
+状況把握
+```
+root@0793a7f44b41:/var/www/html# php ./vendor/bin/phinx status  
+Phinx by CakePHP - https://phinx.org. 0.16.10
+
+using config file phinx.php
+using config parser php
+using migration paths 
+ - /var/www/html/db/migrations
+using seed paths 
+ - /var/www/html/db/seeds
+warning no environment specified, defaulting to: development
+ordering by creation time
+
+ Status  [Migration ID]  Started              Finished             Migration Name 
+----------------------------------------------------------------------------------
+   down  20251004050146                                            Reviews
+   down  20251004050246                                            Tags
+   down  20251004050309                                            ReviewTags
+```
+
+## phinx
+migrationライブラ入り<br>
+https://qiita.com/macchaka/items/3decc5f48a15f00e188c
 ## 参考
 https://qiita.com/KWS_0901/items/c300b5ee010cb48dbaa3<br>
 https://qiita.com/wooooo/items/8be2c7e1ab75a7a54851
