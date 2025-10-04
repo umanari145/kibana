@@ -17,8 +17,27 @@ final class Tags extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change(): void
+    public function up()
     {
+        $table = $this->table('tags', ['id' => false, 'primary_key' => ['id']]);
+        $table->addColumn('id', 'integer', [
+                'identity' => true,
+                'signed' => false,
+                'null' => false
+            ])
+            ->addColumn('tag_name', 'string', [
+                'limit' => 10,
+                'null' => false
+            ])
+            ->addColumn('created_at', 'timestamp', [
+                'null' => true,
+                'default' => null
+            ])
+            ->create();
+    }
 
+    public function down()
+    {
+        $this->table('tags')->drop()->save();
     }
 }

@@ -17,8 +17,35 @@ final class ReviewTags extends AbstractMigration
      * Remember to call "create()" or "update()" and NOT "save()" when working
      * with the Table class.
      */
-    public function change(): void
+    public function up()
     {
+        $table = $this->table('review_tags', ['id' => false, 'primary_key' => ['review_id', 'tag_id']]);
+        $table->addColumn('review_id', 'integer', [
+                'signed' => false,
+                'null' => false
+            ])
+            ->addForeignKey('review_id', 'reviews', 'id', [
+                'delete' => 'CASCADE',
+                'update' => 'NO_ACTION'
+            ])
+            ->addColumn('tag_id', 'integer', [
+                'signed' => false,
+                'null' => false
+            ])
+            ->addForeignKey('tag_id', 'tags', 'id', [
+                'delete' => 'CASCADE',
+                'update' => 'NO_ACTION'
+            ])
+            ->addColumn('created_at', 'timestamp', [
+                'null' => true,
+                'default' => null
+            ])
+            ->create();
+    }
 
+    public function down()
+    {
+        $this->table('review_tags')->drop()->save();
     }
 }
+
