@@ -1,10 +1,13 @@
 <?php
 
 require_once './vendor/autoload.php';
+require_once './src/bootstrap.php';
 
 use App\Logger;
+use App\ReviewSyncService;
 
 $logger = new Logger();
+$review = new ReviewSyncService();
 
 // ログの例
 $logger->info('アプリケーションが開始されました', [
@@ -22,7 +25,8 @@ switch ($action) {
         echo "<h1>ホームページ</h1>";
         echo "<p>簡単なPHPアプリケーションです</p>";
         echo "<a href='?action=about'>About</a> | ";
-        echo "<a href='?action=error'>エラーテスト</a>";
+        echo "<a href='?action=error'>エラーテスト</a> | ";
+        echo "<a href='?action=reviews'>ElasticSearchへの登録</a>";
         break;
 
     case 'about':
@@ -42,6 +46,14 @@ switch ($action) {
         echo "<a href='?action=home'>ホーム</a>";
         break;
 
+    case 'reviews':
+        $review->syncReview();
+        $logger->info('ElasticSearchに登録しました。');
+        echo "<h1>レビューデータ登録</h1>";
+        echo "<p>DBにあるレビューデータをElasticSearchに20件登録しました。</p>";
+        echo "<a href='?action=home'>ホーム</a>";
+        break;
+
     default:
         $logger->warning('不明なアクションへのアクセス', [
             'action' => $action,
@@ -58,6 +70,14 @@ $logger->info('リクエストが完了しました', [
     'response_time' => microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']
 ]);
 
+
+$response = $review->searchIndex('球');
+if ($response['hits']['total']['value'] > 0) {
+    $review = $response['hits']['hits'][0]['_source'];
+    echo "タイトル: " . $review['title'] . "\n";
+} else {
+    echo "該当するレビューが見つかりません\n";
+}
 ?>
 
 <!DOCTYPE html>

@@ -4,7 +4,8 @@
         "php": ">=8.2",
         "elasticsearch/elasticsearch": "^9.0.x-dev",
         "monolog/monolog": "^3.0",
-        "robmorgan/phinx": "^0.16.10"
+        "robmorgan/phinx": "^0.16.10",
+        "illuminate/database": "^12.32"
     },
     "autoload": {
         "psr-4": {

@@ -89,7 +89,7 @@ web上から確認できるアプリで、Monologをelastic-searchにログを�
 
 設定ファイル作成
 ```
-php ./vendor/bin/phinx init          
+php ./vendor/bin/phinx init     
 Phinx by CakePHP - https://phinx.org. 0.16.10
 
 created /var/www/html/phinx.php
@@ -103,9 +103,9 @@ Phinx by CakePHP - https://phinx.org. 0.16.10
 
 using config file phinx.php
 using config parser php
-using migration paths 
+using migration paths
  - /var/www/html/db/migrations
-using seed paths 
+using seed paths
  - /var/www/html/db/seeds
 using migration base class Phinx\Migration\AbstractMigration
 using default template
@@ -127,9 +127,9 @@ Phinx by CakePHP - https://phinx.org. 0.16.10
 
 using config file phinx.php
 using config parser php
-using migration paths 
+using migration paths
  - /var/www/html/db/migrations
-using seed paths 
+using seed paths
  - /var/www/html/db/seeds
 warning no environment specified, defaulting to: development
 ordering by creation time
@@ -140,6 +140,88 @@ ordering by creation time
    down  20251004050246                                            Tags
    down  20251004050309                                            ReviewTags
 ```
+
+seeder
+```
+php ./vendor/bin/phinx seed:run
+Phinx by CakePHP - https://phinx.org. 0.16.10
+
+using config file phinx.php
+using config parser php
+using migration paths 
+ - /var/www/html/db/migrations
+using seed paths 
+ - /var/www/html/db/seeds
+warning no environment specified, defaulting to: development
+using adapter mysql
+using database development_db
+
+ == DummyData: seeding 
+ == DummyData: seeded 0.0381s
+
+All Done. Took 0.0501s
+```
+
+## 全文検索エンジンとしての登録
+reviewインデックスへの登録(読み取り専用)<br>
+登録処理
+```
+    public function syncReview(): void
+    {
+        $reviews = DB::table('reviews')
+            ->select('reviews.*')
+            ->get();
+
+        foreach ($reviews as $review) {
+            try {
+                // オブジェクト型でないとESに入らないためここで
+                $tags = DB::table('review_tags')
+                    ->join('tags', 'review_tags.tag_id', '=', 'tags.id')
+                    ->where('review_tags.review_id', $review->id)
+                    ->select('tags.id', 'tags.tag_name')
+                    ->get();
+
+                // ElasticSearchに保存
+                $this->client->index([
+                    'index' => 'reviews',
+                    'id' => $review->id,
+                    'body' => [
+                        'title' => $review->title ?? '',
+                        'content' => $review->content ?? '',
+                        'tags' => $tags->toArray(),
+                        'created_at' => $review->created_at
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                    echo "✗ レビューID {$review->id} の同期に失敗: {$e->getMessage()}\n";
+            }
+        }
+    }
+
+
+
+```
+
+検索
+```
+    public function searchIndex(string $keyword)
+    {
+        // キーワードで検索して最初の1件を取得
+        $response = $this->client->search([
+            'index' => 'reviews',
+            'body' => [
+                'query' => [
+                    'match' => [
+                        'content' => $keyword
+                    ]
+                ],
+                'size' => 1  // 1件だけ取得
+            ]
+        ]);
+        return $response;
+    }
+```
+
 
 ## phinx
 migrationライブラ入り<br>
