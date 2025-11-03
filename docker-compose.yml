@@ -14,6 +14,18 @@ services:
     networks:
       - elk-network
 
+  python-app:
+    container_name: python-els
+    build:  "docker/python/"
+    volumes:
+      - "./py-app/:/var/www/html"
+    tty: true
+    depends_on:
+      - elasticsearch
+    networks:
+      - elk-network
+    
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:9.0.3
     container_name: elasticsearch
