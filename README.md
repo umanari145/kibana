@@ -234,10 +234,13 @@ reviewインデックスへの登録(読み取り専用)<br>
 RDBとの比較
 |概念|RDB|ElasticSearch|
 |--|--|--|
+|データベース|データベース全体|Cluster（クラスター）|
+|サーバー|DBサーバーインスタンス|Node（ノード）|
 |データの保存場所|Table（テーブル）|Index（インデックス）|
 |1件のデータ|Row（行）|Document（ドキュメント）|
 |データ項目|Column（列）|Field（フィールド）|
 |スキーマ定義|CREATE TABLE|Mapping|
+|分割|パーティーション|シャード|
 
 
 ## phinx
