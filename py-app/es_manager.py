@@ -185,8 +185,94 @@ class Els:
             index="baseball_player_idx",
             id=id
         )
+
+    def match_query(self):
+        query = {
+            "query": {
+                "match": {
+                    "first_name": "清原"
+                }
+            }
+        }
+        return self.client.search(
+            index="baseball_player_idx",
+            body=query
+        )
+
+    def match_multi_query(self):
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "range": {
+                                "date_of_birth": {
+                                "gte": "1960-01-01",
+                                "format": "yyyy-MM-dd"
+                                }
+                            }
+                       },
+                        {
+                            "range": {
+                                "hr": {
+                                "gte": 500
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        query = {
+            "query": {
+                "bool": {
+                    "should": [
+                        {
+                            "term": {
+                            "position": "外野手"
+                            }
+                        },
+                        {
+                            "term": {
+                                "team": "西武"
+                            }
+                        }
+                    ],
+                "minimum_should_match": 1
+                }
+            }
+        }
+
+        query = {
+            "query": {
+                "bool": {
+                    "must": [
+                        {
+                            "match": {
+                                "first_name": "イチロー"
+                            }
+                        },
+                        {
+                            "match": {
+                                "team": "オリックス"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+
+        return self.client.search(
+            index="baseball_player_idx",
+            body=query
+        )
+
+
 es = Els()
 #es.create_index()
 #es.insert_document()
 #es.update_document(9)
-res = es.delete_document(9)
+#res = es.delete_document(9)
+#print(es.match_query())
+print(es.match_multi_query())
