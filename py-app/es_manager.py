@@ -187,6 +187,7 @@ class Els:
         )
 
     def match_query(self):
+        # 単一検索
         query = {
             "query": {
                 "match": {
@@ -200,6 +201,7 @@ class Els:
         )
 
     def match_multi_query(self):
+        # 2つ以上の検索
         query = {
             "query": {
                 "bool": {
@@ -224,6 +226,7 @@ class Els:
             }
         }
 
+        # or検索
         query = {
             "query": {
                 "bool": {
@@ -243,7 +246,7 @@ class Els:
                 }
             }
         }
-
+        #and検索
         query = {
             "query": {
                 "bool": {
@@ -259,6 +262,19 @@ class Els:
                             }
                         }
                     ]
+                }
+            }
+        }
+
+        #aggs 集計
+        query = {
+            "size": 0,
+            "aggs": {
+                "hr_stats": {
+                    #statsは統計データ
+                    "stats": {
+                        "field": "hr"
+                    }
                 }
             }
         }
