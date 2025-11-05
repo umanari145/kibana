@@ -242,6 +242,64 @@ RDBとの比較
 |スキーマ定義|CREATE TABLE|Mapping|
 |分割|パーティーション|シャード|
 
+## elasticsearchの概念
+
+```
+PUT /products_index
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "product_id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "description": {
+        "type": "text"
+      },
+      "price": {
+        "type": "float"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "stock_count": {
+        "type": "integer"
+      },
+      "is_available": {
+        "type": "boolean"
+      },
+      "created_at": {
+        "type": "date",
+        "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis"
+      }
+    }
+  }
+}
+```
+
+| フィールド名 | データ型 (type) | 目的・解説 | 重要なポイント |
+|---------------|----------------|-------------|----------------|
+| product_id | keyword | 商品IDなど、一意で変更しない識別子に使用。完全一致検索や集計用。 | **ソートや集計（Aggregation）**に使えます。 |
+| name | text + keyword (Multi-fields) | 商品名の全文検索用。 | text型は単語に分解されます。`fields.keyword`はソート/フィルタリング用に完全一致検索を可能にします。 |
+| description | text | 商品の説明文など、長文の全文検索用。 | 関連性の高いドキュメントを抽出するのに使われます。 |
+| price | float | 価格データ。 | 範囲検索（例：1000円以上2000円以下）に使えます。 |
+| category | keyword | カテゴリ名など、フィルタリングに使われる値。 | 高速な絞り込みや**集計（カテゴリごとの商品数など）**に最適です。 |
+| stock_count | integer | 在庫数。 | 範囲検索やソートに使えます。 |
+| is_available | boolean | 販売可否。 | 真偽値による高速なフィルタリングに使えます。 |
+| created_at | date | 作成日時。 | 期間指定検索（例：先月登録された商品）に使えます。 |
+
 
 ## phinx
 migrationライブラ入り<br>
