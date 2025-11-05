@@ -282,12 +282,28 @@ RDBとの比較
       },
       "created_at": {
         "type": "date",
-        "format": "yyyy/MM/dd HH:mm:ss||yyyy/MM/dd||epoch_millis"
+        "format": "yyyy/MM/dd HH:mm:ss
       }
     }
   }
 }
 ```
+
+indexの登録
+```
+bash put_mapping.txt 
+{
+  "acknowledged" : true,
+  "shards_acknowledged" : true,
+  "index" : "products_index"
+}
+
+```
+データの投入
+```
+ python bulk_import.py 
+```
+
 settingについて<br>
 1. number_of_shards<br>
 意味: そのインデックスが分割されるプライマリシャード（Primary Shard）の数。<br>

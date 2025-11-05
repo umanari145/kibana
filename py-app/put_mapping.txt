@@ -1,0 +1,43 @@
+curl -X PUT "localhost:9200/products_index?pretty" -H 'Content-Type: application/json' -d'
+{
+  "settings": {
+    "number_of_shards": 1,
+    "number_of_replicas": 1
+  },
+  "mappings": {
+    "properties": {
+      "product_id": {
+        "type": "keyword"
+      },
+      "name": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword",
+            "ignore_above": 256
+          }
+        }
+      },
+      "description": {
+        "type": "text"
+      },
+      "price": {
+        "type": "float"
+      },
+      "category": {
+        "type": "keyword"
+      },
+      "stock_count": {
+        "type": "integer"
+      },
+      "is_available": {
+        "type": "boolean"
+      },
+      "created_at": {
+        "type": "date",
+        "format": "yyyy/MM/dd HH:mm:ss"
+      }
+    }
+  }
+}
+'
